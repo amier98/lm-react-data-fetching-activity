@@ -1,17 +1,18 @@
-import { PoemsResponse } from "./poem_container"
+import { Poem } from "./poem";
+import { PoemsResponse } from "./poem_container";
 
 interface PoemsListProps {
-  poems: PoemsResponse
+  poems: PoemsResponse;
 }
 
-export const PoemsList: React.FC<PoemsListProps> = () => {
+export const PoemsList: React.FC<PoemsListProps> = (poems) => {
   // receive the data on props and map over it here
   // you can use the Poem component for each item in the list
   return (
     <>
-      <p>
-        This is where you can map over the data to render a Poem for each item
-      </p>
+      {poems.poems.map((peom) => (
+        <Poem key={peom.id} poem={peom}></Poem>
+      ))}
     </>
-  )
-}
+  );
+};
