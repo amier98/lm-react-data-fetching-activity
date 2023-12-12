@@ -1,37 +1,53 @@
-import { PoemsResponse } from "./poem_container"
-import { ChangeEvent, useState } from "react"
+import { PoemsResponse } from "./poem_container";
+import { ChangeEvent, useState } from "react";
 
 type AddPoemProps = {
-  setPoems: React.Dispatch<React.SetStateAction<PoemsResponse>>
-}
+  setPoems: React.Dispatch<React.SetStateAction<PoemsResponse>>;
+};
 export const AddPoem: React.FC<AddPoemProps> = ({ setPoems }) => {
   const [inputData, setInputData] = useState({
     title: "",
     body: "",
     author: "",
-  })
+  });
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     setInputData((currentData) =>
       Object.assign({}, currentData, {
         [event.target.id]: event.target.value,
       })
-    )
+    );
   }
 
-  function handleSubmitPoem() {
+  async function handleSubmitPoem(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     try {
+      const result = await fetch("/poetriumph.com/api/v1/poems", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          author: inputData.author,
+          body: inputData.body,
+          title: inputData.title,
+        }),
+      });
+
+      if (result.ok) {
+        const { poem } = await result.json();
+        setPoems((currentPoem) => [...currentPoem, poem]);
+      }
       // This is where you'll implement some data fetching logic to POST a new poem to the API
-      console.log(setPoems)
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   return (
     <>
       <h2>Post a New Poem</h2>
-      <form className="add-poem">
+      <form className="add-poem" onSubmit={handleSubmitPoem}>
         <label>
           Poem Title:{" "}
           <input
@@ -62,8 +78,8 @@ export const AddPoem: React.FC<AddPoemProps> = ({ setPoems }) => {
             onChange={handleChange}
           />
         </label>
-        <button onClick={handleSubmitPoem}>Add to Collection</button>
+        <button type="submit">Add to Collection</button>
       </form>
     </>
-  )
-}
+  );
+};
