@@ -30,7 +30,7 @@ export const PoemContainer: React.FC = () => {
       <h1>Nature Poems: An Articifial Perspective</h1>
       {loading && <ShowLoading />}
       {!loading && <AddPoem setPoems={setPoems} />}
-      {!loading && <PoemsList poems={poems} />}
+      {!loading && <PoemsList poems={poems} setPoems={setPoems} />}
     </>
   );
 };
